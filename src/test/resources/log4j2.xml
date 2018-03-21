@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" packages="org.zalando.log4j2.json">
+
+    <Appenders>
+
+        <File name="file" fileName="test-log.txt" append="false" immediateFlush="true" bufferedIo="false" bufferSize="0">
+            <SimpleJsonLayout ignoredStackTracePackages="org.junit.,java.util.,org.gradle."/>
+        </File>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="file"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
