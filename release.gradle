@@ -1,0 +1,56 @@
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUser, password: ossrhPassword)
+            }
+            pom.project {
+                name project.name
+                description ''
+                packaging 'jar'
+                url 'https://github.com/lukasniemeier-zalando/log4j2-json-layout'
+
+                scm {
+                    connection 'git@github.com:lukasniemeier-zalando/log4j2-json-layout.git'
+                    url 'https://github.com/lukasniemeier-zalando/log4j2-json-layout'
+                }
+
+                licenses {
+                    license {
+                        name 'The MIT License (MIT)'
+                        url 'http://opensource.org/licenses/MIT'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'lniemeier'
+                        name = 'Lukas Niemeier'
+                        email = 'lukas.niemeier@zalando.de'
+                    }
+                }
+            }
+        }
+    }
+}
+
+nexusStaging {
+    username = ossrhUser
+    password = ossrhPassword
+}
