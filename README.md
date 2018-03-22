@@ -1,5 +1,7 @@
 # Log4J 2 JSON Layout Plugin
 
+[![Build Status](https://travis-ci.org/lukasniemeier-zalando/log4j2-json-layout.svg?branch=master)](https://travis-ci.org/lukasniemeier-zalando/log4j2-json-layout)[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/lukasniemeier-zalando/log4j2-json-layout/master/LICENSE)
+
 A **Log4J 2** layout plugin rendering structured JSON log lines. 
 The goal of this plugin is to offer a minimal, concise and ready-to-be-used JSON log layout.
 
