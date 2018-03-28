@@ -1,4 +1,4 @@
-package org.zalando.log4j2.json
+package koeln.niemeier.log4j2.json
 
 import com.fasterxml.jackson.databind.ObjectWriter
 import org.apache.logging.log4j.core.LogEvent

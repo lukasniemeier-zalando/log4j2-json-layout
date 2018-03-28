@@ -1,4 +1,4 @@
-package org.zalando.log4j2.json
+package koeln.niemeier.log4j2.json
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule

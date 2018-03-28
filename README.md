@@ -18,7 +18,7 @@ Use this layout by configuring the `SimpleJsonLayout` it on your appender of cho
 Make sure to expose the plugin to your Log4J instance (see [here](https://logging.apache.org/log4j/2.x/manual/plugins.html)).
 
 ```
-<Configuration packages="org.zalando.log4j2.json">
+<Configuration packages="koeln.niemeier.log4j2.json">
     <Appenders>
         <Console name="stdout">
             <SimpleJsonLayout/>
@@ -51,7 +51,7 @@ In case a `Throwable` is logged an additional object `exception` is rendered wit
     "thrown": {
         "class": "java.lang.IllegalStateException",
         "message": "test",
-        "stack":"java.lang.IllegalStateException: test\n\tat org.zalando.log4j2.json.LayoutTest.testThrown(LayoutTest.kt:119) ~[classes/:?]\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.8.0_121]\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:1.8.0_121]\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_121]\n\tat java.lang.reflect.Method.invoke(Method.java:498) ~[?:1.8.0_121]\n\t... suppressed 46 lines\n\tat com.intellij.junit5.JUnit5IdeaTestRunner.startRunnerWithArgs(JUnit5IdeaTestRunner.java:65) [junit5-rt.jar:?]\n\tat com.intellij.rt.execution.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:47) [junit-rt.jar:?]\n\tat com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:242) [junit-rt.jar:?]\n\tat com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:70) [junit-rt.jar:?]\n",
+        "stack":"java.lang.IllegalStateException: test\n\tat koeln.niemeier.log4j2.json.LayoutTest.testThrown(LayoutTest.kt:119) ~[classes/:?]\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.8.0_121]\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:1.8.0_121]\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_121]\n\tat java.lang.reflect.Method.invoke(Method.java:498) ~[?:1.8.0_121]\n\t... suppressed 46 lines\n\tat com.intellij.junit5.JUnit5IdeaTestRunner.startRunnerWithArgs(JUnit5IdeaTestRunner.java:65) [junit5-rt.jar:?]\n\tat com.intellij.rt.execution.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:47) [junit-rt.jar:?]\n\tat com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:242) [junit-rt.jar:?]\n\tat com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:70) [junit-rt.jar:?]\n",
     }
 }
 ```
