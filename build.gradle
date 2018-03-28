@@ -15,6 +15,7 @@ buildscript {
 
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.2.30"
+    id "org.jetbrains.dokka" version "0.9.16"
     id "maven"
     id "signing"
     id "io.codearte.nexus-staging" version "0.11.0"
@@ -22,6 +23,7 @@ plugins {
 
 group = "koeln.niemeier"
 version = "1.0.0-RC1"
+description = "Log4J 2 JSON Layout Plugin"
 
 repositories {
     mavenCentral()

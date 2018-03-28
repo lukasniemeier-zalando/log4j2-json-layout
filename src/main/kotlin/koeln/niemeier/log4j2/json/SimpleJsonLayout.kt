@@ -15,11 +15,24 @@ import org.apache.logging.log4j.util.Strings
 import java.io.IOException
 import java.io.Writer
 
+/**
+ * A layout rendering structured JSON log lines.
+ */
 @Plugin(name = "SimpleJsonLayout", category = "Core", elementType = "layout", printObject = true)
 class SimpleJsonLayout(config: Configuration?, ignoredPackages: List<String>)
     : AbstractStringLayout(config, Charsets.UTF_8, null, null) {
 
+    /**
+     * Factory object used to create new SimpleJsonLayout.
+     */
     companion object {
+
+        /**
+         * Creates a SimpleJsonLayout.
+         * @param[config] The plugin configuration.
+         * @param[ignoredStackTracePackages] A comma-separated list of packages to be ignored on rendering the stack trace.
+         * @return A SimpleJsonLayout.
+         */
         @JvmStatic
         @PluginFactory
         fun createLayout(
@@ -37,9 +50,16 @@ class SimpleJsonLayout(config: Configuration?, ignoredPackages: List<String>)
 
     private val objectWriter: ObjectWriter = ObjectMapperFactory().createObjectMapper(ignoredPackages).writer()
 
+    /**
+     * @return The JSON content type.
+     */
     override fun getContentType() = "application/json; charset=$charset"
 
-    // Stolen from JsonLayout (AbstractJacksonLayout)
+    /**
+     * Formats the event as a JSON string.
+     *
+     * Remark: Stolen from JsonLayout (AbstractJacksonLayout)
+     */
     override fun toSerializable(event: LogEvent?): String {
         val writer = StringBuilderWriter()
         return try {

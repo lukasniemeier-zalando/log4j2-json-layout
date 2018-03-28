@@ -3,8 +3,19 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
+dokka {
+    outputFormat = 'javadoc'
+    outputDirectory = javadoc.destinationDir
+}
+
+task javadocJar(type: Jar, dependsOn: dokka) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
 artifacts {
     archives sourcesJar
+    archives javadocJar
 }
 
 signing {
@@ -21,12 +32,13 @@ uploadArchives {
             }
             pom.project {
                 name project.name
-                description ''
+                description project.description
                 packaging 'jar'
                 url 'https://github.com/lukasniemeier-zalando/log4j2-json-layout'
 
                 scm {
-                    connection 'git@github.com:lukasniemeier-zalando/log4j2-json-layout.git'
+                    connection 'scm:git:git@github.com:lukasniemeier-zalando/log4j2-json-layout.git'
+                    developerConnection 'scm:git:git@github.com:lukasniemeier-zalando/log4j2-json-layout.git'
                     url 'https://github.com/lukasniemeier-zalando/log4j2-json-layout'
                 }
 
@@ -34,13 +46,11 @@ uploadArchives {
                     license {
                         name 'The MIT License (MIT)'
                         url 'http://opensource.org/licenses/MIT'
-                        distribution 'repo'
                     }
                 }
 
                 developers {
                     developer {
-                        id = 'lniemeier'
                         name = 'Lukas Niemeier'
                         email = 'lukas.niemeier@zalando.de'
                     }
