@@ -7,13 +7,11 @@ import org.apache.logging.log4j.core.config.plugins.Plugin
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration
 import org.apache.logging.log4j.core.config.plugins.PluginFactory
-import org.apache.logging.log4j.core.impl.MutableLogEvent
 import org.apache.logging.log4j.core.layout.AbstractLayout
 import org.apache.logging.log4j.core.layout.AbstractStringLayout
 import org.apache.logging.log4j.core.util.StringBuilderWriter
 import org.apache.logging.log4j.util.Strings
 import java.io.IOException
-import java.io.Writer
 
 /**
  * A layout rendering structured JSON log lines.
@@ -63,28 +61,15 @@ class SimpleJsonLayout(config: Configuration?, ignoredPackages: List<String>)
     override fun toSerializable(event: LogEvent?): String {
         val writer = StringBuilderWriter()
         return try {
-            toSerializable(event, writer)
+            objectWriter.writeValue(writer, event)
+            writer.write("\r\n")
+            markEvent()
             writer.toString()
         } catch (e: IOException) {
             // Should this be an ISE or IAE?
             AbstractLayout.LOGGER.error(e)
             Strings.EMPTY
         }
-    }
-
-    // Stolen from JsonLayout (AbstractJacksonLayout)
-    private fun convertMutableToLog4jEvent(event: LogEvent?): LogEvent? {
-        return if (event is MutableLogEvent)
-            event.createMemento()
-        else
-            event
-    }
-
-    // Stolen from JsonLayout (AbstractJacksonLayout)
-    private fun toSerializable(event: LogEvent?, writer: Writer) {
-        objectWriter.writeValue(writer, convertMutableToLog4jEvent(event))
-        writer.write("\r\n")
-        markEvent()
     }
 
 }
