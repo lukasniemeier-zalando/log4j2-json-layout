@@ -25,7 +25,7 @@ case $yn in
     * ) exit 1;;
 esac
 
-git add version && git commit -m "Release $next_version"
+git add version && git commit -m "Release $next_version :rocket:"
 git push origin master
 
 json=$(printf '{"tag_name":"%s","name":"%s","body":"%s"}' "$next_version" "$next_version" "Release $next_version.")
@@ -33,6 +33,10 @@ json=$(printf '{"tag_name":"%s","name":"%s","body":"%s"}' "$next_version" "$next
 username=`git remote get-url origin | cut -d '/' -f 1 | cut -d ':' -f 2`
 token=`cat ~/$username.token`
 
-curl --silent --show-error --fail --user $username:$token --request POST -g --data '$json' https://api.github.com/repos/$username/log4j2-json-layout/releases
+curl --silent --show-error --fail \
+    --user $username:$token \
+    --header 'Content-Type: application/json' \
+    --data "$json" \
+    https://api.github.com/repos/$username/log4j2-json-layout/releases
 
 ./gradlew uploadArchives closeAndReleaseRepository -Prelease
