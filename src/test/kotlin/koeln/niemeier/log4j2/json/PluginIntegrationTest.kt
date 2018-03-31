@@ -1,46 +1,24 @@
 package koeln.niemeier.log4j2.json
 
 import com.google.gson.Gson
-import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.ThreadContext
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.File
-import java.time.format.DateTimeFormatter.ISO_DATE_TIME
-import java.time.temporal.ChronoField.YEAR
+import java.io.CharArrayWriter
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoField
 
-class LayoutTest {
+class PluginIntegrationTest {
 
-    data class ExceptionEvent(
-            val thrown: String,
-            val message: String?,
-            val stack: String
-    )
-
-    data class LogEvent(
-            val time: String,
-            val severity: String,
-            val logger: String,
-            val context: Map<String, String>?,
-            val message: String,
-            val thread: String,
-            val exception: ExceptionEvent?
-    )
-
-    private val logger = LogManager.getLogger("logger")!!
-
-    @BeforeEach
-    fun reset() {
-        logFile().writeText("")
-    }
+    private val writer = CharArrayWriter()
+    private val logger = LoggerFactory.logToWriter(writer)
 
     @Test
-    fun testEvents() {
+    fun eventPerLogMessage() {
         logger.info("one")
         logger.warn("two")
         logger.info("three")
@@ -50,18 +28,18 @@ class LayoutTest {
     }
 
     @Test
-    fun testTime() {
+    fun timeField() {
         logger.info("message")
 
         val events = logEvents()
 
         val value = events[0].time
-        val time = ISO_DATE_TIME.parse(value)
-        assertTrue(value.startsWith(time.get(YEAR).toString()))
+        val time = DateTimeFormatter.ISO_DATE_TIME.parse(value)
+        assertTrue(value.startsWith(time.get(ChronoField.YEAR).toString()))
     }
 
     @Test
-    fun testSeverity() {
+    fun severityField() {
         logger.info("info")
         logger.warn("warn")
 
@@ -71,15 +49,15 @@ class LayoutTest {
     }
 
     @Test
-    fun testLogger() {
+    fun loggerField() {
         logger.info("info")
 
         val events = logEvents()
-        assertEquals("logger", events[0].logger)
+        assertEquals(logger.name, events[0].logger)
     }
 
     @Test
-    fun testContext() {
+    fun contextField() {
         logger.info("pre")
         ThreadContext.put("key", "value")
         ThreadContext.put("other", "thing")
@@ -89,12 +67,12 @@ class LayoutTest {
         val events = logEvents()
         assertNull(events[0].context)
         assertEquals(2, events[1].context?.size ?: -1)
-        assertIterableEquals(setOf("key", "other"), events[1].context?.keys)
-        assertIterableEquals(setOf("value", "thing"), events[1].context?.values)
+        Assertions.assertIterableEquals(setOf("key", "other"), events[1].context?.keys)
+        Assertions.assertIterableEquals(setOf("value", "thing"), events[1].context?.values)
     }
 
     @Test
-    fun testMessage() {
+    fun messageField() {
         logger.info("Hello {}", "world")
 
         val events = logEvents()
@@ -102,7 +80,7 @@ class LayoutTest {
     }
 
     @Test
-    fun testThread() {
+    fun threadField() {
         logger.info("info");
 
         val events = logEvents()
@@ -110,7 +88,7 @@ class LayoutTest {
     }
 
     @Test
-    fun testNoException() {
+    fun noException() {
         logger.info("info")
 
         val events = logEvents()
@@ -118,7 +96,7 @@ class LayoutTest {
     }
 
     @Test
-    fun testExceptionThrown() {
+    fun exceptionThrownField() {
         try {
             throw IllegalStateException()
         } catch (e: IllegalStateException) {
@@ -130,7 +108,7 @@ class LayoutTest {
     }
 
     @Test
-    fun testExceptionMessage() {
+    fun exceptionMessageField() {
         try {
             throw IllegalStateException("message")
         } catch (e: IllegalStateException) {
@@ -149,7 +127,7 @@ class LayoutTest {
     }
 
     @Test
-    fun testExceptionStackTrace() {
+    fun exceptionStackTraceField() {
         try {
             throw IllegalStateException("Outer", IllegalArgumentException("Inner"))
         } catch (e: IllegalStateException) {
@@ -157,22 +135,33 @@ class LayoutTest {
         }
 
         val events = logEvents()
-        val positivePattern = ".*IllegalArgumentException: Inner.+IllegalStateException: Outer.+LayoutTest.+"
-
         val exception = events[0].exception!!
-        assertTrue(exception.stack.contains(Regex(positivePattern, RegexOption.DOT_MATCHES_ALL)))
 
-        val negativePattern = ".*(org\\.junit\\.|java\\.util\\.|org\\.gradle\\.).+"
-        assertFalse(exception.stack.contains(Regex(negativePattern, RegexOption.DOT_MATCHES_ALL)))
+        val pattern = ".*IllegalArgumentException: Inner.+IllegalStateException: Outer.+PluginIntegrationTest.+"
+        assertTrue(exception.stack.contains(Regex(pattern, RegexOption.DOT_MATCHES_ALL)))
+        val packagePattern = ".*(org\\.junit\\.|java\\.util\\.|org\\.gradle\\.).+"
+        assertTrue(exception.stack.contains(Regex(packagePattern, RegexOption.DOT_MATCHES_ALL)))
+    }
 
+    @Test
+    fun exceptionStackTraceFieldIgnoresPackages() {
+        val ignoringLogger = LoggerFactory.logToWriter(writer, "org.junit.,java.util.,org.gradle.")
+        try {
+            throw IllegalStateException()
+        } catch (e: IllegalStateException) {
+            ignoringLogger.info("exceptionStackTraceFieldIgnoresPackages", e)
+        }
+
+        val events = logEvents()
+        val exception = events[0].exception!!
+
+        val packagePattern = ".*(org\\.junit\\.|java\\.util\\.|org\\.gradle\\.).+"
+        assertFalse(exception.stack.contains(Regex(packagePattern, RegexOption.DOT_MATCHES_ALL)))
     }
 
     private fun logEvents(): List<LogEvent> {
-        return logFile().readLines()
-                .map { it.trim('\u0000') }  // hack to mask null bytes of log file reset
+        return writer.toString().trim().split("\r\n")
                 .map { Gson().fromJson(it, LogEvent::class.java) }
     }
-
-    private fun logFile() = File("test-log.txt")
 
 }

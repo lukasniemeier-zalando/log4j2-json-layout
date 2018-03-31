@@ -10,7 +10,7 @@ The goal of this plugin is to offer a minimal, concise and ready-to-be-used JSON
 {"time":"2018-03-21T18:00:46.175Z","severity":"WARN","logger":"MyLogger","message":"Huch","thrown":{"class":"java.lang.IllegalStateException","stack":"..."},"thread":"main"}
 ```
 
-This plugin **only** supports Log4J 2.7 and requires Jackson 2.8. This is a perfect match in case you are using Spring Boot 1. 
+This plugin **only** supports Log4J 2.7. This is a perfect match in case you are using Spring Boot 1. 
 
 ## Usage
 
@@ -51,7 +51,7 @@ In case a `Throwable` is logged an additional object `exception` is rendered wit
     "thrown": {
         "class": "java.lang.IllegalStateException",
         "message": "test",
-        "stack":"java.lang.IllegalStateException: test\n\tat koeln.niemeier.log4j2.json.LayoutTest.testThrown(LayoutTest.kt:119) ~[classes/:?]\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.8.0_121]\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:1.8.0_121]\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_121]\n\tat java.lang.reflect.Method.invoke(Method.java:498) ~[?:1.8.0_121]\n\t... suppressed 46 lines\n\tat com.intellij.junit5.JUnit5IdeaTestRunner.startRunnerWithArgs(JUnit5IdeaTestRunner.java:65) [junit5-rt.jar:?]\n\tat com.intellij.rt.execution.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:47) [junit-rt.jar:?]\n\tat com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:242) [junit-rt.jar:?]\n\tat com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:70) [junit-rt.jar:?]\n",
+        "stack":"java.lang.IllegalStateException: test\n\tat koeln.niemeier.log4j2.json.LoggingTest.testThrown(LoggingTest.kt:119) ~[classes/:?]\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.8.0_121]\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:1.8.0_121]\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_121]\n\tat java.lang.reflect.Method.invoke(Method.java:498) ~[?:1.8.0_121]\n\t... suppressed 46 lines\n\tat com.intellij.junit5.JUnit5IdeaTestRunner.startRunnerWithArgs(JUnit5IdeaTestRunner.java:65) [junit5-rt.jar:?]\n\tat com.intellij.rt.execution.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:47) [junit-rt.jar:?]\n\tat com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:242) [junit-rt.jar:?]\n\tat com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:70) [junit-rt.jar:?]\n",
     }
 }
 ```

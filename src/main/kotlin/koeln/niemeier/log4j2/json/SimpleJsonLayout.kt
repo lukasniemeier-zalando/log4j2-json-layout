@@ -1,17 +1,13 @@
 package koeln.niemeier.log4j2.json
 
-import com.fasterxml.jackson.databind.ObjectWriter
 import org.apache.logging.log4j.core.LogEvent
 import org.apache.logging.log4j.core.config.Configuration
 import org.apache.logging.log4j.core.config.plugins.Plugin
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration
 import org.apache.logging.log4j.core.config.plugins.PluginFactory
-import org.apache.logging.log4j.core.layout.AbstractLayout
 import org.apache.logging.log4j.core.layout.AbstractStringLayout
 import org.apache.logging.log4j.core.util.StringBuilderWriter
-import org.apache.logging.log4j.util.Strings
-import java.io.IOException
 
 /**
  * A layout rendering structured JSON log lines.
@@ -21,7 +17,7 @@ class SimpleJsonLayout(config: Configuration?, ignoredPackages: List<String>)
     : AbstractStringLayout(config, Charsets.UTF_8, null, null) {
 
     /**
-     * Factory object used to create new SimpleJsonLayout.
+     * Factory object used to generate new SimpleJsonLayout.
      */
     companion object {
 
@@ -46,7 +42,7 @@ class SimpleJsonLayout(config: Configuration?, ignoredPackages: List<String>)
         }
     }
 
-    private val objectWriter: ObjectWriter = ObjectMapperFactory().createObjectMapper(ignoredPackages).writer()
+    private val serializer = LogEventSerializer(ignoredPackages)
 
     /**
      * @return The JSON content type.
@@ -55,21 +51,13 @@ class SimpleJsonLayout(config: Configuration?, ignoredPackages: List<String>)
 
     /**
      * Formats the event as a JSON string.
-     *
-     * Remark: Stolen from JsonLayout (AbstractJacksonLayout)
      */
     override fun toSerializable(event: LogEvent?): String {
         val writer = StringBuilderWriter()
-        return try {
-            objectWriter.writeValue(writer, event)
-            writer.write("\r\n")
-            markEvent()
-            writer.toString()
-        } catch (e: IOException) {
-            // Should this be an ISE or IAE?
-            AbstractLayout.LOGGER.error(e)
-            Strings.EMPTY
-        }
+        writer.write(serializer.serialize(event))
+        writer.write("\r\n")
+        markEvent()
+        return writer.toString()
     }
 
 }
