@@ -9,7 +9,7 @@ import java.io.File
 
 class PluginFactoryIntegrationTest {
 
-    private val logger = LoggerFactory.logAsConfigured("src/test/resources/test-configuration.xml")
+    private val logger = LoggerFactory.logAsConfigured("test-configuration.xml")
 
     @BeforeEach
     fun reset() {
