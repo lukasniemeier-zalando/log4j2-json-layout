@@ -22,7 +22,7 @@ plugins {
 }
 
 group = "koeln.niemeier"
-version = "1.0.0-RC2"
+version = file("version").text.trim()
 description = "Log4J 2 JSON Layout Plugin"
 
 repositories {
