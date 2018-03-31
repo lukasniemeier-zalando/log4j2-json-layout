@@ -1,6 +1,7 @@
 # Log4J 2 JSON Layout Plugin
 
 [![Build Status](https://travis-ci.org/lukasniemeier-zalando/log4j2-json-layout.svg?branch=master)](https://travis-ci.org/lukasniemeier-zalando/log4j2-json-layout)
+[![Release](https://img.shields.io/github/release/lukasniemeier-zalando/log4j2-json-layout.svg)](https://github.com/lukasniemeier-zalando/log4j2-json-layout/releases)
 [![Maven Central](https://img.shields.io/maven-central/v/koeln.niemeier/log4j2-json-layout.svg)](https://maven-badges.herokuapp.com/maven-central/koeln.niemeier/log4j2-json-layout)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/lukasniemeier-zalando/log4j2-json-layout/master/LICENSE)
 
