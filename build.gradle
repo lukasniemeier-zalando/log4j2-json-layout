@@ -13,7 +13,8 @@ buildscript {
 }
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.2.30"
+    id "org.jetbrains.kotlin.jvm" version "1.2.31"
+    id "org.jetbrains.kotlin.kapt" version "1.2.31"
     id "org.jetbrains.dokka" version "0.9.16"
     id "jacoco"
     id "maven"
@@ -30,6 +31,8 @@ repositories {
 }
 
 dependencies {
+    kapt group: 'org.apache.logging.log4j', name: 'log4j-core', version: "$log4j_version"
+
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: "$kotlin_version"
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: "$log4j_version"
 
