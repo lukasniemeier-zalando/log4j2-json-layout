@@ -5,6 +5,7 @@ import org.apache.logging.log4j.ThreadContext
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -67,8 +68,32 @@ class PluginIntegrationTest {
         val events = logEvents()
         assertNull(events[0].context)
         assertEquals(2, events[1].context?.size ?: -1)
-        Assertions.assertIterableEquals(setOf("key", "other"), events[1].context?.keys)
-        Assertions.assertIterableEquals(setOf("value", "thing"), events[1].context?.values)
+        assertIterableEquals(setOf("key", "other"), events[1].context?.keys)
+        assertIterableEquals(setOf("value", "thing"), events[1].context?.values)
+    }
+
+    @Test
+    fun contextFieldNullKey() {
+        ThreadContext.put(null, "value")
+        logger.info("context")
+        ThreadContext.clearAll()
+
+        val events = logEvents()
+        assertEquals(1, events[0].context?.size ?: -1)
+        assertIterableEquals(setOf("null"), events[0].context?.keys)
+        assertIterableEquals(setOf("value"), events[0].context?.values)
+    }
+
+    @Test
+    fun contextFieldNullValue() {
+        ThreadContext.put("key", null)
+        logger.info("context")
+        ThreadContext.clearAll()
+
+        val events = logEvents()
+        assertEquals(1, events[0].context?.size ?: -1)
+        assertIterableEquals(setOf("key"), events[0].context?.keys)
+        assertIterableEquals(setOf("null"), events[0].context?.values)
     }
 
     @Test
