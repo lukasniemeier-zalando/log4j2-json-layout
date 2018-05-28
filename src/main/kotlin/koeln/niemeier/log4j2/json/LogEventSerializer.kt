@@ -28,8 +28,8 @@ internal class LogEventSerializer(private val ignoredPackages: List<String>) {
 
     private fun serializeContextData(generator: Json.Starting, value: ReadOnlyStringMap): Json.Finished {
         val json = generator.startObject()
-        value.forEach { k: String, v: Any ->
-            json.stringField(k, v.toString())
+        value.forEach { k: String?, v: Any? ->
+            json.stringField(k.toString(), v.toString())
         }
         return json.endObject()
     }
