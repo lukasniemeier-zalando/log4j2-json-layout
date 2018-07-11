@@ -61,6 +61,9 @@ class SimpleJsonLayout(config: Configuration?, ignoredPackages: List<String>)
         return writer.toString()
     }
 
+    /**
+     * See AbstractLayout (working around LOG4J2-1769)
+     */
     override fun encode(event: LogEvent?, destination: ByteBufferDestination) {
         val data = toByteArray(event)
         synchronized(destination) {
