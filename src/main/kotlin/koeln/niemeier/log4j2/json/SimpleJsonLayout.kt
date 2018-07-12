@@ -7,6 +7,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration
 import org.apache.logging.log4j.core.config.plugins.PluginFactory
 import org.apache.logging.log4j.core.layout.AbstractStringLayout
+import org.apache.logging.log4j.core.layout.ByteBufferDestination
 import org.apache.logging.log4j.core.util.StringBuilderWriter
 
 /**
@@ -60,4 +61,13 @@ class SimpleJsonLayout(config: Configuration?, ignoredPackages: List<String>)
         return writer.toString()
     }
 
+    /**
+     * See AbstractLayout (working around LOG4J2-1769)
+     */
+    override fun encode(event: LogEvent?, destination: ByteBufferDestination) {
+        val data = toByteArray(event)
+        synchronized(destination) {
+            writeTo(data, 0, data.size, destination)
+        }
+    }
 }
